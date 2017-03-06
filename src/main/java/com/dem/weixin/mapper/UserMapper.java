@@ -1,5 +1,6 @@
 package com.dem.weixin.mapper;
 
+import com.dem.weixin.domain.LoginUser;
 import com.dem.weixin.domain.User;
 import java.util.List;
 
@@ -13,4 +14,8 @@ public interface UserMapper {
     List<User> selectAll();
 
     int updateByPrimaryKey(User record);
+    
+    int isExist(User user);
+    
+    User login(LoginUser u);
 }

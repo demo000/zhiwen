@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dem.weixin.mapper.TbClassMapper">
+    <resultMap id="BaseResultMap" type="com.dem.weixin.domain.TbClass">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="tb_name" property="tbName" jdbcType="VARCHAR"/>
+
+        <association property="tearcher" column="id" columnPrefix="tear_" javaType="com.dem.weixin.domain.Tearcher">
+            <id column="id" property="id"/>
+            <result column="tb_name" property="tbName"/>
+        </association>
+        <collection property="students" column="id" columnPrefix="stu_" ofType="com.dem.weixin.domain.Student"
+        >
+            <id column="id" property="id"/>
+            <result column="tb_name" property="tbName"/>
+        </collection>
+    </resultMap>
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tb_class
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" parameterType="com.dem.weixin.domain.TbClass" useGeneratedKeys="true" keyProperty="id">
+    insert into tb_class (tb_name)
+    values (#{tbName,jdbcType=VARCHAR})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="com.dem.weixin.domain.TbClass">
+    update tb_class
+    set tb_name = #{tbName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+    select c.id id , c.tb_name  tb_name ,tear.id tear_id ,tear.tb_name tear_tb_name,stu.id stu_id ,stu.tb_name stu_tb_name
+    from tb_class c
+    LEFT JOIN student stu on c.id = stu.class_id
+     LEFT JOIN tearcher tear on c.id = tear.class_id
+    where c.id = #{id,jdbcType=BIGINT}
+  </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+    select id, tb_name
+    from tb_class
+  </select>
+</mapper>

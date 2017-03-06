@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dem.weixin.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.dem.weixin.domain.User">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="userName" property="userName" jdbcType="VARCHAR"/>
+        <result column="passWord" property="passWord" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="birthDay" property="birthDay" jdbcType="TIMESTAMP"/>
+        <result column="sex" property="sex"/>
+        <result column="createDate" property="createDate" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from user
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" parameterType="com.dem.weixin.domain.User" useGeneratedKeys="true" keyProperty="id">
+    insert into user (userName, passWord, email,
+      birthDay, sex, createDate
+      )
+    values (#{userName,jdbcType=VARCHAR}, #{passWord,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
+      #{birthDay,jdbcType=TIMESTAMP}, #{sex,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="com.dem.weixin.domain.User">
+    update user
+    set userName = #{userName,jdbcType=VARCHAR},
+      passWord = #{passWord,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      birthDay = #{birthDay,jdbcType=TIMESTAMP},
+      sex = #{sex,jdbcType=VARCHAR},
+      createDate = #{createDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+    select id, userName, passWord, email, birthDay, sex, createDate
+    from user
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+    select id, userName, passWord, email, birthDay, sex, createDate
+    from user
+  </select>
+    
+    <select id="isExist" resultType="int">
+        SELECT COUNT(*) FROM user
+        <where>
+            <if test="userName!=null">and username=#{userName}</if>
+            <if test="email!=null">and email=#{email}</if>
+        </where>
+    </select>
+    <sql id="base_filed">
+        id, userName, passWord, email, birthDay, sex, createDate
+    </sql>
+    <select id="login" resultMap="BaseResultMap">
+        SELECT <include refid="base_filed" /> from user
+        WHERE username = #{userName} and passWord=#{passWord}
+    </select>
+</mapper>

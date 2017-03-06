@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dem.weixin.mapper.FocusUserMapper">
+    <resultMap id="BaseResultMap" type="com.dem.weixin.domain.FocusUser">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="userId" property="userId" jdbcType="VARCHAR"/>
+        <result column="appId" property="appId" jdbcType="VARCHAR"/>
+        <result column="createdate" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="genre" property="genre" jdbcType="BIT"/>
+        <result column="ip" property="ip"/>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from focususer
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" parameterType="com.dem.weixin.domain.FocusUser" useGeneratedKeys="true" keyProperty="id">
+    insert into focususer (userId, appId, createDate,ip
+      genre)
+    values (#{userId,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{ip,jdbcType=VARCHAR},
+      #{genre,jdbcType=BIT})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="com.dem.weixin.domain.FocusUser">
+    update focususer
+    set userId = #{userId,jdbcType=VARCHAR},
+      appId = #{appId,jdbcType=VARCHAR},
+      createDate = #{createDate,jdbcType=TIMESTAMP},
+      ip = #{ip},
+      genre = #{genre,jdbcType=BIT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+    <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+    select id, userId, appId, createDate,ip, genre
+    from focususer
+    where userId=#{userId}
+  </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+    select id, userId, appId, createDate, ip,genre
+    from focususer
+  </select>
+    
+    
+    <sql id="basefiled">
+    id, userId, appId, createDate,ip, genre
+  </sql>
+    
+    <sql id="basewhere">
+        <if test="appId!=null">and appId = #{appId}</if>
+        <if test="startDate!=null">and createDate &gt; #{startDate}</if>
+        <if test="endDate!=null">and createDate &lt; #{endDate}</if>
+        <if test="userId!=null">and userId = #{userId}</if>
+        <if test="genre != null">and genre = #{genre}</if>
+    
+    
+    </sql>
+    
+    <select id="query" resultType="com.dem.weixin.domain.FocusUser">
+        SELECT
+        <include refid="basefiled"/>
+        FROM focususer
+        <where>
+            <include refid="basewhere"/>
+        
+        </where>
+        <if test="pageSize!=-1">
+            LIMIT #{start} ,#{pageSize}
+        </if>
+    </select>
+    
+    <select id="queryCount" resultType="int">
+        select count(*) FROM focususer
+        <where>
+            <include refid="basewhere"/>
+        </where>
+    </select>
+    <select id="queryAppId" resultType="java.lang.String">
+        SELECT DISTINCT appId from focususer WHERE appId LIKE CONCAT('%', #{keywords},'%')
+        LIMIT 0,8
+    </select>
+</mapper>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dem.weixin.mapper.TearcherMapper" >
+  <resultMap id="BaseResultMap" type="com.dem.weixin.domain.Tearcher" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="tb_name" property="tbName" jdbcType="VARCHAR" />
+    <result column="class_id" property="classId" jdbcType="BIGINT" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from tearcher
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.dem.weixin.domain.Tearcher" useGeneratedKeys="true" keyProperty="id" >
+    insert into tearcher (tb_name, class_id)
+    values (#{tbName,jdbcType=VARCHAR}, #{classId,jdbcType=BIGINT})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.dem.weixin.domain.Tearcher" >
+    update tearcher
+    set tb_name = #{tbName,jdbcType=VARCHAR},
+      class_id = #{classId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, tb_name, class_id
+    from tearcher
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, tb_name, class_id
+    from tearcher
+  </select>
+</mapper>

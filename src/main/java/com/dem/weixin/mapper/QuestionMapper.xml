@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dem.weixin.mapper.QuestionMapper">
+    <resultMap id="BaseResultMap" type="com.dem.weixin.domain.Question">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="userName" property="userName"  jdbcType="VARCHAR" />
+        <result column="createDate" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="commentNumber" property="commentNumber" />
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from question
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" parameterType="com.dem.weixin.domain.Question" useGeneratedKeys="true" keyProperty="id">
+    insert into question (title, content,user_id, userName, createDate)
+    values (#{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR},#{userId,jdbcType=BIGINT}, #{userName,jdbcType=VARCHAR},
+      #{createDate,jdbcType=TIMESTAMP})
+  </insert>
+    
+    <update id="updateByPrimaryKey" parameterType="com.dem.weixin.domain.Question">
+    update question
+    set title = #{title,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      createDate = #{createDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+    
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+    select id, title, content, user_id, createDate,userName
+    from question
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+    
+    <select id="selectAll" resultMap="BaseResultMap">
+    select id, title, content, user_id, createDate,userName
+    from question
+  </select>
+    
+    <sql id="base_where">
+        <if test="questionId!=null">and q.id = #{questionId}</if>
+        <if test="userId!=null">and q.user_id = #{userId}</if>
+        <if test="keywords!=null">and q.content like concat('%',#{keywords},'%') or q.title like  concat('%',#{keywords},'%')</if>
+    </sql>
+    <select id="queryCount" resultType="java.lang.Integer">
+        SELECT count(*) from question q
+        <where>
+            <include refid="base_where"/>
+        </where>
+    </select>
+    
+    
+    <select id="query" resultType="com.dem.weixin.domain.Question">
+        select q.id id,concat(SUBSTRING_INDEX(q.content,<![CDATA[ '</p>' ]]>,3),<![CDATA[ '</p>' ]]>)
+        content,q.user_id user_id,q.createDate createDate,q.userName userName,q.title title ,count(c.questionId)  commentNumber
+        FROM question q LEFT JOIN comment c on q.id=c.questionId
+        <where>
+            <include refid="base_where"/>
+        </where>
+        
+        GROUP by c.questionId
+        
+        <if test="pageSize!=null">
+            limit #{start},#{pageSize}
+        </if>
+    </select>
+    
+    <select id="getContent" resultType="string">
+        
+        SELECT
+        <choose>
+            <when test="type != 1">
+                concat(SUBSTRING_INDEX(content,<![CDATA[ '</p>' ]]>,3),<![CDATA[ '</p>' ]]>) AS content
+            </when>
+            <otherwise>
+                content
+            </otherwise>
+        </choose>
+        FROM question  WHERE id=#{questionId}
+    </select>
+</mapper>

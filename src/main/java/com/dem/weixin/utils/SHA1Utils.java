@@ -3,7 +3,7 @@ package com.dem.weixin.utils;
 import java.security.MessageDigest;
 
 /**
- * Created by DEM on 2016/12/31.
+ * Created by DEM on
  */
 public class SHA1Utils {
     public static final String TOKEN="demo";
@@ -15,9 +15,11 @@ public class SHA1Utils {
     }
     
     
-    
-    
-    
+    /**
+     * 获得sha1加密
+     * @param str
+     * @return
+     */
     public static String getSha1(String str){
         if(str==null||str.length()==0){
             return null;

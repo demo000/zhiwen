@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dem.weixin.mapper.CommentMapper">
+    <resultMap id="BaseResultMap" type="com.dem.weixin.domain.Comment">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="questionId" property="questionId" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="createDate" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="star" property="star" jdbcType="INTEGER"/>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from comment
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" parameterType="com.dem.weixin.domain.Comment" useGeneratedKeys="true" keyProperty="id">
+    insert into comment (questionId, user_id, content, 
+      user_name, createDate, star
+      )
+    values (#{questionId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{content,jdbcType=VARCHAR}, 
+      #{userName,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{star,jdbcType=INTEGER}
+      )
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="com.dem.weixin.domain.Comment">
+    update comment
+    set questionId = #{questionId,jdbcType=BIGINT},
+      user_id = #{userId,jdbcType=BIGINT},
+      content = #{content,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      createDate = #{createDate,jdbcType=TIMESTAMP},
+      star = #{star,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+    select id, questionId, user_id, content, user_name, createDate, star
+    from comment
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+    select id, questionId, user_id, content, user_name, createDate, star
+    from comment
+  </select>
+    
+    <select id="queryCount" resultType="int">
+        SELECT count(*) FROM comment
+        <where>
+            <if test="userId!=null">and user_id=#{userId}</if>
+            <if test="questionId!=null">and questionId=#{questionId}</if>
+            <if test="star!=null">and star &gt; #{star}</if>
+        </where>
+    </select>
+    
+    <select id="query" resultMap="BaseResultMap">
+        SELECT id, questionId, user_id, content, user_name, createDate, star FROM comment
+        <where>
+            <if test="userId!=null">and user_id=#{userId}</if>
+            <if test="questionId!=null">and questionId= #{questionId}</if>
+            <if test="star!=null">and star &gt; #{star}</if>
+        </where>
+        <if test="pageSize>0">
+            LIMIT #{start},#{pageSize}
+        </if>
+    </select>
+</mapper>
