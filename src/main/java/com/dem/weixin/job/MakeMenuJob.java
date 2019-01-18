@@ -29,7 +29,7 @@ public class MakeMenuJob {
     public String getToken(String appid, String appsecret) {
         
         if (org.springframework.util.StringUtils.isEmpty(access_token)//不存在
-                || (expires_in - 7200 * 1000) > new Date().getTime()
+                || (expires_in - 7200 * 1000) > System.currentTimeMillis()
                 ) {//token失效
             System.out.println("请求token");
             StringBuilder url = new StringBuilder(80);
@@ -41,7 +41,7 @@ public class MakeMenuJob {
                 System.out.println("连接出错,错误代码:"+jsonObject.getString("errcode"));
             }else{
                 access_token = jsonObject.getString("access_token");
-                expires_in = new Date().getTime() + jsonObject.getLong("expires_in") * 1000;
+                expires_in = System.currentTimeMillis() + jsonObject.getLong("expires_in") * 1000;
             }
             
             
